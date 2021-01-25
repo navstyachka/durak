@@ -1,16 +1,15 @@
 import { createStoreon } from 'storeon'
 import { storeonDevtools } from 'storeon/devtools'
 import { ROBOT, PLAYER, CARDS_ON_HAND_MIN } from '../constants'
-import { CardDeck } from './utils'
+import { getNewDeck, getTrump } from './utils'
 
-const deckUtils = new CardDeck()
 const chooseTurn = Math.floor(Math.random() * 2) ? PLAYER : ROBOT
 const initialStore = {
-  deck: deckUtils.getNewDeck(),
+  deck: getNewDeck(),
   player: [],
   robot: [],
   inGame: [],
-  trump: deckUtils.getTrump(),
+  trump: getTrump(),
   turn: null,
   attacker: chooseTurn,
   draw: [],

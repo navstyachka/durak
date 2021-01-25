@@ -41,18 +41,21 @@ const Board = () => {
           </div>
         </StyledDisclaimer>
       )}
+      {gameStarted && (
+        <>
+          <RobotPanel />
+          <GamePanel />
+          <PlayerPanel />
 
-      <RobotPanel />
-      <GamePanel />
-      <PlayerPanel />
-
-      <StyledActionText>
-        {`Now is ${turn === PLAYER ? 'your' : "robot's"} turn. ${
-          turn === PLAYER ? 'You are ' : '🤖 Robot is'
-        } ${attacker === turn ? 'attacking ⚔️' : 'defending 🛡'}`}
-        <br />
-        Trump: {SUIT_ICONS[trump]} Cards left in the deck: {deck.length}
-      </StyledActionText>
+          <StyledActionText>
+            {`Now is ${turn === PLAYER ? 'your' : "robot's"} turn. ${
+              turn === PLAYER ? 'You are ' : '🤖 Robot is'
+            } ${attacker === turn ? 'attacking ⚔️' : 'defending 🛡'}`}
+            <br />
+            Trump: {SUIT_ICONS[trump]} Cards left in the deck: {deck.length}
+          </StyledActionText>
+        </>
+      )}
     </StyledBoard>
   )
 }

@@ -1,13 +1,11 @@
-import { CARD_SUITS } from '../constants'
+import { CARD_SUITS, CARD_VALUES } from '../constants'
 export class CardDeck {
-  cardValues = [6, 7, 8, 9, 10, 11, 12, 13, 14]
-
-  // Generate a deck of 36 cards (short version of deck)
+  // Generate a deck of 36 cards (short version of the deck)
   generateDeck = () => {
     const deck = []
 
     const getCardsForSuit = (suit) => {
-      this.cardValues.forEach((value) => {
+      CARD_VALUES.forEach((value) => {
         deck.push({
           suit,
           value,

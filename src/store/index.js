@@ -1,4 +1,5 @@
 import { createStoreon } from 'storeon'
+import { storeonDevtools } from 'storeon/devtools'
 import { ROBOT, PLAYER, CARDS_ON_HAND_MIN } from '../constants'
 import { CardDeck } from './utils'
 
@@ -10,7 +11,7 @@ const initialStore = {
   robot: [],
   inGame: [],
   trump: deckUtils.getTrump(),
-  turn: PLAYER,
+  turn: null,
   attacker: PLAYER,
   // turn: chooseTurn,
   // attacker: chooseTurn,
@@ -20,7 +21,7 @@ const initialStore = {
 const deck = (store) => {
   store.on('@init', () => initialStore)
   store.on('setTrump', ({ trump }, nextTrump) => nextTrump)
-  store.on('startGame', () => {
+  store.on('startGame', ({ attacker }) => {
     store.dispatch('takeCardsFromDeck', {
       itemsToTake: CARDS_ON_HAND_MIN,
       target: PLAYER,
@@ -29,6 +30,9 @@ const deck = (store) => {
       itemsToTake: CARDS_ON_HAND_MIN,
       target: ROBOT,
     })
+    return {
+      turn: attacker,
+    }
   })
 
   store.on('takeCardsFromDeck', ({ deck }, { itemsToTake, target } = 0) => {
@@ -144,4 +148,7 @@ const deck = (store) => {
   })
 }
 
-export const store = createStoreon([deck])
+export const store = createStoreon([
+  deck,
+  process.env.NODE_ENV !== 'production' && storeonDevtools,
+])

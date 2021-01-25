@@ -1,3 +1,4 @@
+// Styles are not neat and clean, I would separate them in different folders with their respective components
 import styled from 'styled-components'
 
 const COLOR_GREEN = '#365136'

@@ -18,7 +18,7 @@ const initialStore = {
   draw: [],
 }
 
-const deck = (store) => {
+const game = (store) => {
   store.on('@init', () => initialStore)
   store.on('setTrump', ({ trump }, nextTrump) => nextTrump)
   store.on('startGame', ({ attacker }) => {
@@ -35,6 +35,52 @@ const deck = (store) => {
     }
   })
 
+  store.on('switchTurn', ({ turn }) => ({
+    turn: turn === ROBOT ? PLAYER : ROBOT,
+  }))
+
+  store.on('switchAttackTurn', ({ attacker }) => ({
+    attacker: attacker === ROBOT ? PLAYER : ROBOT,
+  }))
+
+  store.on('draw', ({ draw, inGame }) => {
+    // On draw we need to provide both Robot and Player with new cards if they have less than min amount
+    store.dispatch('setToMinCards', PLAYER)
+    store.dispatch('setToMinCards', ROBOT)
+
+    // On draw we always switch turn and attacker
+    store.dispatch('switchTurn')
+    store.dispatch('switchAttackTurn')
+
+    // Clear the table
+    return {
+      inGame: [],
+      draw: [...draw, ...inGame],
+    }
+  })
+
+  store.on('abandonDefense', ({ inGame }, target) => {
+    // Looser takes the table cards
+    store.dispatch(
+      target === PLAYER ? 'givePlayerCards' : 'giveRobotCards',
+      inGame
+    )
+
+    // Get the winner new cards
+    const winner = target === PLAYER ? ROBOT : PLAYER
+    store.dispatch('setToMinCards', winner)
+
+    // Attacker in this case stays the same (bummer), so we only switch turns
+    store.dispatch('switchTurn')
+
+    // Clear the table
+    return {
+      inGame: [],
+    }
+  })
+}
+
+const deck = (store) => {
   store.on('takeCardsFromDeck', ({ deck }, { itemsToTake, target } = 0) => {
     const newDeck = [...deck]
     const takenCards = newDeck.splice(0, itemsToTake)
@@ -75,14 +121,6 @@ const deck = (store) => {
     ),
   }))
 
-  store.on('switchTurn', ({ turn }) => ({
-    turn: turn === ROBOT ? PLAYER : ROBOT,
-  }))
-
-  store.on('switchAttackTurn', ({ attacker }) => ({
-    attacker: attacker === ROBOT ? PLAYER : ROBOT,
-  }))
-
   store.on('pushCardInGame', ({ inGame, turn }, card) => {
     if (turn === PLAYER) store.dispatch('takePlayerCard', card)
     if (turn === ROBOT) store.dispatch('takeRobotCard', card)
@@ -110,45 +148,10 @@ const deck = (store) => {
       })
     }
   })
-
-  store.on('draw', ({ draw, inGame }) => {
-    // On draw we need to provide both Robot and Player with new cards if they have less than min amount
-    store.dispatch('setToMinCards', PLAYER)
-    store.dispatch('setToMinCards', ROBOT)
-
-    // On draw we always switch turn and attacker
-    store.dispatch('switchTurn')
-    store.dispatch('switchAttackTurn')
-
-    // Clear the table
-    return {
-      inGame: [],
-      draw: [...draw, ...inGame],
-    }
-  })
-
-  store.on('abandonDefense', ({ inGame }, target) => {
-    // Looser takes the table cards
-    store.dispatch(
-      target === PLAYER ? 'givePlayerCards' : 'giveRobotCards',
-      inGame
-    )
-
-    // Get the winner new cards
-    const winner = target === PLAYER ? ROBOT : PLAYER
-    store.dispatch('setToMinCards', winner)
-
-    // Attacker in this case stays the same (bummer), so we only switch turns
-    store.dispatch('switchTurn')
-
-    // Clear the table
-    return {
-      inGame: [],
-    }
-  })
 }
 
 export const store = createStoreon([
+  game,
   deck,
   process.env.NODE_ENV !== 'production' && storeonDevtools,
 ])

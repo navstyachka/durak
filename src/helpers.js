@@ -23,14 +23,16 @@ export const checkIfCardCanGo = (card, cardOnTheTable, trump, isAttacking) => {
   return false
 }
 
-// Robot's attack and defense will always be random but not the best choice possible
+// Robot's attack and defense will always be random with not the best choice possible
 export const getRandomCard = (cards) =>
   cards[Math.round(Math.random() * (cards.length - 1))]
 
 export const pickComputerCard = (cards, cardOnTheTable, trump, isAttacking) => {
   // If no cards available, we return undefined
   return getRandomCard(
-    cards.filter((card) => checkIfCardCanGo(card, cardOnTheTable, trump, isAttacking))
+    cards.filter((card) =>
+      checkIfCardCanGo(card, cardOnTheTable, trump, isAttacking)
+    )
   )
 }
 
@@ -65,7 +67,7 @@ export const runGameActions = (
 
       // If Robot has nothing to defend with, they abandon the defense
       if (!defenseCard) {
-        alert('Robot has nothing to defend with!')
+        alert('Robot has no cards to defend with!')
         dispatch('abandonDefense', ROBOT)
       } else {
         // Otherwise Robot defends with a random suitable card
@@ -93,7 +95,7 @@ export const runGameActions = (
         checkIfCardCanGo(card, cards[0], trump, false)
       )
       if (!availableCards.length) {
-        alert('Oops, you have no more cards to defend with!')
+        alert('Oops, you have no cards to defend with!')
         dispatch('abandonDefense', PLAYER)
       }
     }

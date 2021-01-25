@@ -30,6 +30,10 @@ export const StyledDisclaimer = styled.div`
   background: ${COLOR_GREEN};
 `
 
+export const StyledWinner = styled(StyledDisclaimer)`
+  font-size: 30px;
+`
+
 export const StyledActionText = styled.div`
   margin: 30px 20px;
   text-align: center;

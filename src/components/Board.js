@@ -12,6 +12,7 @@ import {
   StyledDisclaimer,
   StyledStartBtn,
   StyledActionText,
+  StyledWinner,
 } from './styles'
 
 const Board = () => {
@@ -41,7 +42,16 @@ const Board = () => {
     setGameStarted(true)
     dispatch('startGame')
   }
-  if (winner) return winner
+  if (winner)
+    return (
+      <StyledBoard>
+        <StyledWinner>
+          {winner === PLAYER
+            ? 'Congratulations! You won! ♠️🎉♥️🍾♦️✨♣️'
+            : 'Uh-oh! 🤖 won 🙀 Try again! 🙈'}
+        </StyledWinner>
+      </StyledBoard>
+    )
 
   return (
     <StyledBoard>

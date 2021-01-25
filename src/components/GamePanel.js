@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react'
 import { useStoreon } from 'storeon/react'
 
-import {
-  runGameActions,
-} from '../helpers'
+import { runGameActions } from '../helpers'
 
 import Card from './Card'
 import Draw from './Draw'
@@ -47,9 +45,6 @@ const GamePanel = () => {
       trump
     )
   }, [turn])
-
-  console.log('Turn: ', turn)
-  console.log('Attack turn: ', attacker)
 
   return (
     <StyledGamePanel>

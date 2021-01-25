@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useStoreon } from 'storeon/react'
 
 import { SUIT_ICONS, ROBOT, PLAYER } from '../constants'
@@ -15,18 +15,33 @@ import {
 } from './styles'
 
 const Board = () => {
-  const { dispatch, deck, trump, attacker, turn } = useStoreon(
+  const { dispatch, deck, trump, attacker, turn, player, robot } = useStoreon(
     'deck',
     'trump',
     'attacker',
-    'turn'
+    'turn',
+    'player',
+    'robot'
   )
   const [gameStarted, setGameStarted] = useState(false)
+  const [winner, setWinner] = useState(null)
+
+  useEffect(() => {
+    if (!deck.length) {
+      if (!player.length) {
+        setWinner(PLAYER)
+      }
+      if (!robot.length) {
+        setWinner(ROBOT)
+      }
+    }
+  }, [deck, player, robot])
 
   const startGame = () => {
     setGameStarted(true)
     dispatch('startGame')
   }
+  if (winner) return winner
 
   return (
     <StyledBoard>

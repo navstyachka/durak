@@ -12,9 +12,7 @@ const initialStore = {
   inGame: [],
   trump: deckUtils.getTrump(),
   turn: null,
-  attacker: PLAYER,
-  // turn: chooseTurn,
-  // attacker: chooseTurn,
+  attacker: chooseTurn,
   draw: [],
 }
 

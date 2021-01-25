@@ -30,6 +30,7 @@ const deck = (store) => {
       target: ROBOT,
     })
   })
+
   store.on('takeCardsFromDeck', ({ deck }, { itemsToTake, target } = 0) => {
     const newDeck = [...deck]
     const takenCards = newDeck.splice(0, itemsToTake)
@@ -43,12 +44,15 @@ const deck = (store) => {
       deck: newDeck,
     }
   })
+
   store.on('givePlayerCards', ({ player }, cards) => ({
     player: [...player, ...cards],
   }))
+
   store.on('giveRobotCards', ({ robot }, cards) => ({
     robot: [...robot, ...cards],
   }))
+
   store.on('takePlayerCard', ({ player }, card) => ({
     player: [...player].filter(
       (iterationCard) =>
@@ -57,6 +61,7 @@ const deck = (store) => {
         )
     ),
   }))
+
   store.on('takeRobotCard', ({ robot }, card) => ({
     robot: [...robot].filter(
       (iterationCard) =>
@@ -65,12 +70,15 @@ const deck = (store) => {
         )
     ),
   }))
+
   store.on('switchTurn', ({ turn }) => ({
     turn: turn === ROBOT ? PLAYER : ROBOT,
   }))
+
   store.on('switchAttackTurn', ({ attacker }) => ({
     attacker: attacker === ROBOT ? PLAYER : ROBOT,
   }))
+
   store.on('pushCardInGame', ({ inGame, turn }, card) => {
     if (turn === PLAYER) store.dispatch('takePlayerCard', card)
     if (turn === ROBOT) store.dispatch('takeRobotCard', card)
@@ -81,19 +89,28 @@ const deck = (store) => {
       inGame: newInGame,
     }
   })
-  store.on('draw', ({ draw, inGame, player, robot }) => {
-    // On draw we need to provide both Robot and Player with new cards if they have less than min amount
-    if (player.length < CARDS_ON_HAND_MIN)
-      store.dispatch('takeCardsFromDeck', {
-        itemsToTake: CARDS_ON_HAND_MIN - player.length,
-        target: PLAYER,
-      })
 
-    if (robot.length < CARDS_ON_HAND_MIN)
+  store.on('setToMinCards', ({ player, robot }, target) => {
+    if (target === PLAYER) {
+      if (player.length < CARDS_ON_HAND_MIN)
+        store.dispatch('takeCardsFromDeck', {
+          itemsToTake: CARDS_ON_HAND_MIN - player.length,
+          target: PLAYER,
+        })
+    }
+
+    if (target === ROBOT) {
       store.dispatch('takeCardsFromDeck', {
         itemsToTake: CARDS_ON_HAND_MIN - robot.length,
-        target: PLAYER,
+        target: ROBOT,
       })
+    }
+  })
+
+  store.on('draw', ({ draw, inGame }) => {
+    // On draw we need to provide both Robot and Player with new cards if they have less than min amount
+    store.dispatch('setToMinCards', PLAYER)
+    store.dispatch('setToMinCards', ROBOT)
 
     // On draw we always switch turn and attacker
     store.dispatch('switchTurn')
@@ -106,13 +123,21 @@ const deck = (store) => {
     }
   })
 
-  store.on('abandonDefense', ({ draw, inGame, player, robot }, target) => {
-    // refresh the board
-    // give looser the table cards
-    // give winner new cards
-    // switch turn
-    // switch attacker
+  store.on('abandonDefense', ({ inGame }, target) => {
+    // Looser takes the table cards
+    store.dispatch(
+      target === PLAYER ? 'givePlayerCards' : 'giveRobotCards',
+      inGame
+    )
 
+    // Get the winner new cards
+    const winner = target === PLAYER ? ROBOT : PLAYER
+    store.dispatch('setToMinCards', winner)
+
+    // Attacker in this case stays the same (bummer), so we only switch turns
+    store.dispatch('switchTurn')
+
+    // Clear the table
     return {
       inGame: [],
     }

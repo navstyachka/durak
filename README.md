@@ -1,3 +1,7 @@
+# What is this?
+
+This is super simplified version of an old Russian card game Fool, aka Дурак.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

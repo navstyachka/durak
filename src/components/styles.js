@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 const COLOR_GREEN = '#365136'
 const COLOR_GREEN_LIGHT = '#5e8f5e'
+const CARD_HEIGHT = 160
 
 // Board styles
 export const StyledBoard = styled.div`
@@ -21,11 +22,18 @@ export const StyledDisclaimer = styled.div`
   top: 0;
   right: 0;
   left: 0;
-  z-index: 2;
+  z-index: 3;
   height: 100vh;
   margin-bottom: 20px;
   text-align: center;
   background: ${COLOR_GREEN};
+`
+
+export const StyledActionText = styled.div`
+  margin: 30px 20px;
+  text-align: center;
+  font-size: 20px;
+  line-height: 30px;
 `
 
 export const StyledStartBtn = styled.button`
@@ -41,44 +49,23 @@ export const StyledStartBtn = styled.button`
   cursor: pointer;
 `
 
-export const StyledInfo = styled.div`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-`
-
-// Game board
-export const StyledGamePanel = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 620px;
-  margin: 0 auto;
-`
-
-export const StyledGameField = styled.div`
-  width: 500px;
-  height: 260px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
-`
-
 // Card styles
 export const StyledCard = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
   width: 100px;
-  height: 160px;
+  height: ${CARD_HEIGHT}px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   text-align: center;
-  background: ${({ $empty }) =>
-    $empty ? 'transparent' : 'rgba(0, 0, 0, 0.1)'};
-  ${({ $hidden, $empty }) =>
+  background: ${({ $empty }) => ($empty ? 'transparent' : '#fff')};
+  color: #000;
+  ${({ $disabled }) => $disabled && 'opacity: 0.7;'}
+  ${({ $hidden, $empty, $disabled }) =>
     !$hidden &&
     !$empty &&
+    !$disabled &&
     `
     cursor: pointer;
     &:hover {
@@ -98,7 +85,6 @@ export const StyledCard = styled.div`
     linear-gradient(245deg, transparent 75%, rgba(255, 255, 255, 0.8) 75%) 7px -15px,
     ${COLOR_GREEN_LIGHT};
     background-size: 15px 30px;
-    color: black;
   `}
 `
 
@@ -106,9 +92,64 @@ export const StyledCard = styled.div`
 export const StyledPanel = styled.div`
   display: flex;
   justify-content: center;
+  height: ${CARD_HEIGHT}px;
   margin: 30px 0;
 `
 
 export const StyledPanelCard = styled.div`
   margin: 0 20px;
+`
+
+// Game board
+export const StyledGamePanel = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 740px;
+  margin: 0 auto;
+`
+
+export const StyledGameField = styled.div`
+  position: relative;
+  width: 500px;
+  height: 260px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+`
+
+export const StyledGameCentralCard = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 70%;
+  transform: translate(0, -50%);
+  z-index: 2;
+`
+
+export const StyledGameStackedCards = styled.div`
+  position: absolute;
+  left: 20px;
+  right: 28%;
+  top: 50%;
+  transform: translate(0, -50%);
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: nowrap;
+  height: ${CARD_HEIGHT}px;
+  opacity: 0.7;
+`
+export const StyledGameStackedCard = styled.div`
+  position: relative;
+  flex: 0 1 8.3%;
+  overflow: hidden;
+
+  &:first-child {
+    flex: 0 1 22%;
+  }
+
+  & > ${StyledCard} {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
 `

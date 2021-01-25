@@ -1,3 +1,6 @@
+export const ROBOT = 'robot'
+export const PLAYER = 'player'
+export const CARDS_ON_HAND_MIN = 6
 export const SUIT_ICONS = {
   hearts: '♥',
   spades: '♠',

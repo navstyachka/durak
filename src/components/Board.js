@@ -1,21 +1,26 @@
 import React, { useState } from 'react'
 import { useStoreon } from 'storeon/react'
 
-import { SUIT_ICONS } from '../constants'
+import { SUIT_ICONS, ROBOT, PLAYER } from '../constants'
 
 import PlayerPanel from './PlayerPanel'
-import RobotPanel from './RobotPanelPanel'
+import RobotPanel from './RobotPanel'
 import GamePanel from './GamePanel'
 
 import {
   StyledBoard,
-  StyledInfo,
   StyledDisclaimer,
   StyledStartBtn,
+  StyledActionText,
 } from './styles'
 
 const Board = () => {
-  const { dispatch, deck, trump, turn } = useStoreon('deck', 'trump', 'turn')
+  const { dispatch, deck, trump, attacker, turn } = useStoreon(
+    'deck',
+    'trump',
+    'attacker',
+    'turn'
+  )
   const [gameStarted, setGameStarted] = useState(false)
 
   const startGame = () => {
@@ -28,21 +33,26 @@ const Board = () => {
       {!gameStarted && (
         <StyledDisclaimer>
           <div>
-            {turn.toUpperCase()} goes first
+            {attacker.toUpperCase()} goes first
             <StyledStartBtn onClick={startGame}>Let's go!</StyledStartBtn>
-            {turn === 'robot' && (
+            {attacker === ROBOT && (
               <div>Not happy? Keep refreshing and wait for your luck! 🌚</div>
             )}
           </div>
         </StyledDisclaimer>
       )}
-      <StyledInfo>
-        Trump: {SUIT_ICONS[trump]}
-        <div>Cards left: {deck.length}</div>
-      </StyledInfo>
+
       <RobotPanel />
       <GamePanel />
       <PlayerPanel />
+
+      <StyledActionText>
+        {`Now is ${turn === PLAYER ? 'your' : "robot's"} turn. ${
+          turn === PLAYER ? 'You are ' : '🤖 Robot is'
+        } ${attacker === turn ? 'attacking ⚔️' : 'defending 🛡'}`}
+        <br />
+        Trump: {SUIT_ICONS[trump]} Cards left in the deck: {deck.length}
+      </StyledActionText>
     </StyledBoard>
   )
 }

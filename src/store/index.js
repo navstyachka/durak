@@ -46,8 +46,8 @@ const game = (store) => {
     store.dispatch('setToMinCards', ROBOT)
 
     // On draw we always switch turn and attacker
-    store.dispatch('switchTurn')
     store.dispatch('switchAttackTurn')
+    store.dispatch('switchTurn')
 
     // Clear the table
     return {
@@ -121,7 +121,9 @@ const deck = (store) => {
   store.on('pushCardInGame', ({ inGame, turn }, card) => {
     if (turn === PLAYER) store.dispatch('takePlayerCard', card)
     if (turn === ROBOT) store.dispatch('takeRobotCard', card)
-    store.dispatch('switchTurn')
+    // We need timeout to see the updates in the game
+    setTimeout(() => store.dispatch('switchTurn'), 1000)
+
     const newInGame = [...inGame]
     newInGame.unshift(card)
     return {

@@ -1,6 +1,7 @@
 # What is this?
 
 This is super simplified version of an old Russian card game Fool, aka Дурак.
+The rules are described in the method `helpers.js/checkIfCardCanGo`
 
 # Getting Started with Create React App
 

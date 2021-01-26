@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useStoreon } from 'storeon/react'
 
 import { runGameActions } from '../helpers'
@@ -32,19 +32,23 @@ const GamePanel = () => {
     'player',
     'trump'
   )
+  const prevTurnRef = useRef()
 
   // Every time on turn change we automatically make either Robot go or update Player state
   useEffect(() => {
-    runGameActions(
-      dispatch,
-      cards,
-      playerCards,
-      robotCards,
-      turn,
-      attacker,
-      trump
-    )
-  }, [turn])
+    if (prevTurnRef.current !== turn) {
+      runGameActions(
+        dispatch,
+        cards,
+        playerCards,
+        robotCards,
+        turn,
+        attacker,
+        trump
+      )
+      prevTurnRef.current = turn
+    }
+  }, [dispatch, turn, cards, playerCards, robotCards, attacker, trump])
 
   return (
     <StyledGamePanel>
